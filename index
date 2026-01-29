@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Conversor de Link LPSG</title>
+
+  <!-- CSS externo obrigatório -->
+  <link rel="stylesheet" href="style.css" />
+</head>
+
+<body>
+
+  <div class="container">
+
+    <!-- CARD GLASS ÚNICO -->
+    <div class="glass">
+
+      <!-- HEADER -->
+      <div class="card-header">
+        <div class="icon glass">🎬</div>
+        <div>
+          <h3 class="card-title">Conversor LPSG</h3>
+          <p class="card-subtitle">Imagem → Vídeo</p>
+        </div>
+      </div>
+
+      <!-- CONTEÚDO -->
+      <div class="card-content">
+
+        <!-- LOGO -->
+        <div style="text-align:center; margin-bottom: 1rem;">
+          <img
+            src="https://i.imgur.com/PTnKFGo.png"
+            alt="Logo"
+            style="max-width: 260px;"
+          />
+        </div>
+
+        <!-- TUTORIAL -->
+        <p style="opacity:0.85; font-size: 0.95rem; margin-bottom: 0.75rem;">
+          <strong>Como usar:</strong>
+        </p>
+        <ol style="margin-left: 1.25rem; margin-bottom: 1rem; opacity:0.85;">
+          <li>Abra o LPSG e vá até o vídeo desejado</li>
+          <li>Clique com o botão direito na imagem</li>
+          <li>Escolha <em>“Copiar endereço da imagem”</em></li>
+          <li>Cole o link abaixo</li>
+        </ol>
+
+        <!-- INPUT -->
+        <textarea
+          id="input"
+          placeholder="Cole aqui o link .jpg"
+          style="
+            width: 100%;
+            min-height: 80px;
+            padding: 0.75rem;
+            border-radius: 0.75rem;
+            border: none;
+            resize: vertical;
+          "
+        ></textarea>
+
+        <!-- BOTÃO -->
+        <div style="text-align:center; margin-top: 1rem;">
+          <button class="btn-glass glass" onclick="converter()">
+            Converter
+          </button>
+        </div>
+
+        <!-- OUTPUTS -->
+        <div id="outputs" style="display:none; margin-top: 1.25rem;">
+
+          <div class="music-widget glass">
+            <div style="flex:1; word-break: break-all;" id="outMp4"></div>
+            <button class="play-btn" onclick="copiar('outMp4')" title="Copiar">📋</button>
+          </div>
+
+          <div class="music-widget glass">
+            <div style="flex:1; word-break: break-all;" id="outMkv"></div>
+            <button class="play-btn" onclick="copiar('outMkv')" title="Copiar">📋</button>
+          </div>
+
+          <div class="music-widget glass">
+            <div style="flex:1; word-break: break-all;" id="outMov"></div>
+            <button class="play-btn" onclick="copiar('outMov')" title="Copiar">📋</button>
+          </div>
+
+        </div>
+
+        <!-- MENSAGEM -->
+        <p id="msg" style="text-align:center; margin-top:0.75rem;"></p>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- SCRIPT -->
+  <script>
+    const input = document.getElementById("input");
+    const msg = document.getElementById("msg");
+    const outputs = document.getElementById("outputs");
+
+    input.addEventListener("keydown", function (e) {
+      if (e.key === "Enter") {
+        e.preventDefault();
+        converter();
+      }
+    });
+
+    function converter() {
+      msg.innerText = "";
+      outputs.style.display = "none";
+
+      const texto = input.value.trim();
+      if (!texto) {
+        msg.innerText = "Cole um link válido.";
+        return;
+      }
+
+      const regex = /https?:\/\/cdn-videos\.lpsg\.com\/data\/attachments\/posters\/(\d+)\/(.+)\.jpg/i;
+      const match = texto.match(regex);
+
+      if (!match) {
+        msg.innerText = "Link fora do padrão esperado.";
+        return;
+      }
+
+      const base = `https://cdn-videos.lpsg.com/data/video/${match[1]}/${match[2]}`;
+
+      document.getElementById("outMp4").innerText = base + ".mp4";
+      document.getElementById("outMkv").innerText = base + ".mkv";
+      document.getElementById("outMov").innerText = base + ".mov";
+
+      outputs.style.display = "block";
+    }
+
+    function copiar(id) {
+      const texto = document.getElementById(id).innerText;
+      if (!texto) return;
+
+      navigator.clipboard.writeText(texto).then(() => {
+        msg.innerText = "Link copiado ✔";
+      });
+    }
+  </script>
+
+</body>
+</html>
